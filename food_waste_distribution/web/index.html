@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Food Waste Distribution System</title>
+<style>
+  body {
+    background-color: #e9f0f8;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+  }
+
+  .container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px 35px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    width: 420px;
+    margin-top: 60px;
+    text-align: center;
+  }
+
+  h2 {
+    color: #1f3b73;
+    margin-bottom: 25px;
+    font-size: 22px;
+    text-align: center;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 1.5px solid #cdd7ee;
+    font-size: 16px;
+    margin-bottom: 12px;
+    transition: border-color 0.3s ease;
+  }
+
+  input:focus, select:focus {
+    border-color: #1f78d1;
+    outline: none;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background-color: #1f78d1;
+    color: white;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  button:hover {
+    background-color: #1662a8;
+    transform: scale(1.02);
+  }
+
+  pre {
+    background: #f5f9ff;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: left;
+    white-space: pre-wrap;
+    font-family: 'Consolas', monospace;
+    font-size: 15px;
+    color: #1c3a72;
+    border: 1px solid #c2d1f0;
+  }
+
+  .footer {
+    font-size: 13px;
+    color: #777;
+    margin-top: 10px;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>🍽️ Food Waste Distribution System</h2>
+  <input type="text" id="food" placeholder="Enter food item (e.g. Bread - 5pcs)" />
+  <select id="priority">
+    <option value="1">High Priority</option>
+    <option value="2" selected>Medium Priority</option>
+    <option value="3">Low Priority</option>
+  </select>
+  <button onclick="addFood()">Add Food</button>
+  <button onclick="distribute()">Distribute</button>
+  <button onclick="viewQueue()">View Queue</button>
+  <pre id="output">Output will appear here...</pre>
+  <div class="footer">Developed using Java + HTML + CSS + JS</div>
+</div>
+
+<script>
+const API = "http://localhost:9090/api";
+
+function addFood() {
+  const food = document.getElementById('food').value.trim();
+  const priority = document.getElementById('priority').value;
+  if (!food) return alert("Please enter a food item.");
+  fetch(API, {
+    method: "POST",
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    body: `action=add&food=${encodeURIComponent(food)}&priority=${priority}`
+  })
+  .then(res => res.text())
+  .then(data => document.getElementById("output").textContent = data);
+}
+
+function distribute() {
+  fetch(API, {
+    method: "POST",
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    body: "action=distribute"
+  })
+  .then(res => res.text())
+  .then(data => document.getElementById("output").textContent = data);
+}
+
+function viewQueue() {
+  fetch(API)
+  .then(res => res.text())
+  .then(data => document.getElementById("output").textContent = data);
+}
+</script>
+</body>
+</html>
+
